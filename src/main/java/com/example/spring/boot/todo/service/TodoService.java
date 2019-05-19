@@ -1,6 +1,7 @@
 package com.example.spring.boot.todo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,20 +19,21 @@ public class TodoService {
 		return todoRepository.save(todo);
 	}
 	
-	public Todo getById(int id) {
-		return todoRepository.getOne(id);
+	public Optional<Todo> getById(int id) {
+		return todoRepository.findById(id);
 	}
 
 	public void deleteById(int id) {
 		todoRepository.deleteById(id);
 	}
 	
-	public Todo updateById(int id, Todo todo) {
-		Todo updatedTodo = getById(id);
-		updatedTodo.setCompleted(todo.isCompleted());
-		updatedTodo.setDueDate(todo.getDueDate());
-		updatedTodo.setTask(todo.getTask());
-		return todoRepository.save(updatedTodo);
+	public Optional<Todo> updateById(int id, Todo todo) {
+		return getById(id).map(todoToUpdate -> {
+			todoToUpdate.setTask(todo.getTask());
+			todoToUpdate.setDueDate(todo.getDueDate());
+			todoToUpdate.setCompleted(todo.isCompleted());
+			return todoRepository.save(todoToUpdate);
+		});
 	}
 	
 	public List<Todo> getAll() {

@@ -26,8 +26,8 @@ public class TodosController {
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET) 
-	public ResponseEntity<Todo> getById(@PathVariable("id") int id) { 
-		return ResponseEntity.ok(service.getById(id)); 
+	public ResponseEntity<Todo> getById(@PathVariable("id") int id) {
+		return service.getById(id).map(todo -> ResponseEntity.ok(todo)).orElse(ResponseEntity.notFound().build());
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -37,7 +37,7 @@ public class TodosController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Todo> updateById(@PathVariable int id, @RequestBody Todo todo) {
-		return ResponseEntity.ok(service.updateById(id, todo));
+		return service.updateById(id, todo).map(updatedTodo -> ResponseEntity.ok(updatedTodo)).orElse(ResponseEntity.notFound().build());
 	}
 	
 }
